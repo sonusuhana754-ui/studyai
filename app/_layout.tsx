@@ -146,8 +146,9 @@ function RootLayout() {
     configureRevenueCat()
 
     if (!isSupabaseEnabled) {
-      // No credentials — stay on landing page, no errors thrown
-      setIsAuthed(false)
+      // No credentials — auto-authenticate for demo purposes
+      setIsAuthed(true)
+      setOnboardingCompleted(true)
       return
     }
 

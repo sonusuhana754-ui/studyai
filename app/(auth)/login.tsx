@@ -24,7 +24,7 @@ import { Text } from '@/components/ui/Text'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Ionicons } from '@expo/vector-icons'
-import { supabase } from '@/lib/supabase'
+import { supabase, isSupabaseEnabled } from '@/lib/supabase'
 import { track } from '@/lib/analytics'
 import { ACCENT, ACCENT_DIM, ACCENT_BORDER, BG, SURFACE, BORDER, ERROR, ERROR_DIM, TEXT_SECONDARY } from '@/lib/theme'
 import { APP_SCHEME } from '@/lib/constants'
@@ -38,8 +38,8 @@ import { SolverMockupCard } from '@/components/SolverMockupCard'
 WebBrowser.maybeCompleteAuthSession()
 
 // ─── Set to true during development to show a "Skip to Home" button ───────────
-// Set to false before shipping to production.
-const DEV_ALLOW_SKIP = __DEV__
+// Set to false before shipping to production. Also true when Supabase is disabled for demo.
+const DEV_ALLOW_SKIP = __DEV__ || !isSupabaseEnabled
 
 // ─── Disposable email blocklist ───────────────────────────────────────────────
 // Prevents throwaway emails from creating accounts.
