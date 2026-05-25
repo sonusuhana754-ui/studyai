@@ -38,8 +38,7 @@ import { SolverMockupCard } from '@/components/SolverMockupCard'
 WebBrowser.maybeCompleteAuthSession()
 
 // ─── Set to true during development to show a "Skip to Home" button ───────────
-// Set to false before shipping to production. Also true when Supabase is disabled for demo.
-const DEV_ALLOW_SKIP = __DEV__ || !isSupabaseEnabled
+const DEV_ALLOW_SKIP = true
 
 // ─── Disposable email blocklist ───────────────────────────────────────────────
 // Prevents throwaway emails from creating accounts.
