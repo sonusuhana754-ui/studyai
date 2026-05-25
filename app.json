@@ -1,0 +1,86 @@
+{
+  "expo": {
+    "name": "StudyAI",
+    "slug": "studyai",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "studyai",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0d0d0d"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.yourcompany.myapp",
+      "associatedDomains": [
+        "applinks:REPLACE_WITH_YOUR_DOMAIN"
+      ]
+    },
+    "android": {
+      "package": "com.yourcompany.myapp",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#0d0d0d"
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ],
+      "androidStatusBar": {
+        "barStyle": "light-content",
+        "backgroundColor": "#0d0d0d",
+        "translucent": true
+      },
+      "predictiveBackGestureEnabled": false,
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            { "scheme": "myapp" }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
+    },
+    "web": {
+      "favicon": "./assets/icon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-image",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#0d0d0d",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200
+        }
+      ],
+      "expo-secure-store",
+      "expo-localization",
+      "expo-font",
+      [
+        "@sentry/react-native/expo",
+        {
+          "url": "https://sentry.io/",
+          "project": "react-native",
+          "organization": "your-org"
+        }
+      ],
+      "@sentry/react-native"
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "REPLACE_WITH_YOUR_EAS_PROJECT_ID"
+      },
+      "geminiApiKey": "$EXPO_PUBLIC_GEMINI_API_KEY"
+    },
+    "owner": "REPLACE_WITH_YOUR_EXPO_OWNER"
+  }
+}
