@@ -146,9 +146,8 @@ function RootLayout() {
     configureRevenueCat()
 
     if (!isSupabaseEnabled) {
-      // No credentials — auto-authenticate for demo purposes
-      setIsAuthed(true)
-      setOnboardingCompleted(true)
+      // No credentials — stay on landing page, skip button will be on login page
+      setIsAuthed(false)
       return
     }
 
