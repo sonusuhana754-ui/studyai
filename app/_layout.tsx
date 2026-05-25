@@ -196,7 +196,6 @@ function RootLayout() {
   }, [])
 
   useEffect(() => {
-    if (!__DEV__) return
     const sub = DeviceEventEmitter.addListener('__dev_skip_auth__', () => {
       setIsAuthed(true)
       setOnboardingCompleted(true)
