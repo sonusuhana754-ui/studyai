@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, Pressable, ScrollView, TextInput } from 'react-native'
+import { View, Text, StyleSheet, Pressable, ScrollView, TextInput, ActivityIndicator } from 'react-native'
 import { router, useLocalSearchParams } from 'expo-router'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useToast } from '@/contexts/ToastContext'
@@ -79,10 +79,11 @@ export default function QuizScreen() {
     setLoading(true)
     try {
       const data = await generateQuizQuestions(actualSubject, difficulty, 10, actualTopic)
-      if (!data?.questions?.length) {
-        throw new Error('No questions generated')
+      const validQuestions = (data?.questions || []).filter((q: any) => q && typeof q === 'object' && (q.question || q.text))
+      if (validQuestions.length === 0) {
+        throw new Error('No valid questions generated')
       }
-      setQuizQuestions(data.questions)
+      setQuizQuestions(validQuestions)
       setCurrentQuestion(0)
       setSelectedOption(null)
       setShowResult(false)
@@ -150,7 +151,7 @@ export default function QuizScreen() {
           </Pressable>
         </View>
         <View style={s.loadingContainer}>
-          <View style={s.spinner} />
+          <ActivityIndicator size="large" color={ACCENT} />
           <UIText style={s.loadingText}>Generating quiz...</UIText>
         </View>
       </SafeAreaView>
@@ -205,7 +206,7 @@ export default function QuizScreen() {
             <UIText style={s.questionText}>{q.question}</UIText>
           </Card>
 
-          {q.type === 'mcq' && q.options?.map((option: string, i: number) => (
+          {q.type === 'mcq' && Array.isArray(q.options) && q.options.map((option: string, i: number) => (
             <Pressable
               key={i}
               onPress={() => handleAnswer(i)}
