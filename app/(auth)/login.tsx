@@ -404,14 +404,14 @@ export default function LoginScreen() {
               </View>
             )}
 
-            {/* ─── Dev skip button (only visible in __DEV__) ─────────────────── */}
+            {/* ─── Skip button (allows bypassing login) ───────────────────────── */}
             {DEV_ALLOW_SKIP && (
               <Pressable
                 onPress={handleDevSkip}
                 style={({ pressed }) => [s.devSkipBtn, pressed && { opacity: 0.6 }]}
               >
                 <Ionicons name="play-skip-forward-outline" size={14} color={TEXT_SECONDARY} />
-                <Text style={s.devSkipText}>Skip to Home (dev only)</Text>
+                <Text style={s.devSkipText}>Skip to Home</Text>
               </Pressable>
             )}
 
