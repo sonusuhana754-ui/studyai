@@ -5,7 +5,7 @@ A comprehensive AI-powered study application that helps students learn, study, a
 ## 🚀 Live Demo & Walkthrough
 
 - **Web Live Link**: [https://astra-chi-lime.vercel.app/](https://astra-chi-lime.vercel.app/)
-- **Video Walkthrough**: [Watch Loom Demo Video](https://www.loom.com/share/placeholder_id)
+- **Video Walkthrough**: [Watch Loom Demo Video](https://www.loom.com/share/c57c0af9bde94cb8b471a7898a8b0a65)
 
 ## 📸 Screenshots
 
