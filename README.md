@@ -2,6 +2,15 @@
 
 A comprehensive AI-powered study application that helps students learn, study, and excel with advanced features like problem solving, flashcards, study planning, and more.
 
+## 🚀 Live Demo & Walkthrough
+
+- **Web Live Link**: [https://astra-chi-lime.vercel.app/](https://astra-chi-lime.vercel.app/)
+- **Video Walkthrough**: [Watch Loom Demo Video](https://www.loom.com/share/placeholder_id)
+
+## 📸 Screenshots
+
+![StudyAI Dashboard Mockup](./screenshots/dashboard.png)
+
 ## Features
 
 - 🧠 **AI Problem Solver** - Get step-by-step solutions to math, physics, and chemistry problems

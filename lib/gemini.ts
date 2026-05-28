@@ -10,9 +10,10 @@ import { isGeminiQuotaError } from './groqVision'
 import { ExplanationStyleId, getStylePromptModifier, DEFAULT_EXPLANATION_STYLE } from './explanationStyles'
 
 const GROQ_API_KEY = process.env.EXPO_PUBLIC_GROQ_API_KEY
+const GEMINI_API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY ?? process.env.EXPO_PUBLIC_GOOGLE_GEMINI_API_KEY
 
-if (!GROQ_API_KEY && __DEV__) {
-  console.warn('EXPO_PUBLIC_GROQ_API_KEY is not set in .env')
+if (!GROQ_API_KEY && !GEMINI_API_KEY && __DEV__) {
+  console.warn('Neither EXPO_PUBLIC_GROQ_API_KEY nor EXPO_PUBLIC_GEMINI_API_KEY is set in .env')
 }
 
 export interface SolutionStep {
@@ -416,10 +417,6 @@ function parseGroqJson<T>(text: string): T {
 }
 
 export async function generateExplainer(topic: string, subject: string, context: string) {
-  if (!GROQ_API_KEY) {
-    throw new Error('EXPO_PUBLIC_GROQ_API_KEY is not set')
-  }
-
   const EXPLAINER_PROMPT = `Create a 5-scene educational explainer about "${topic}" (${subject}).
 Context: ${context}
 
@@ -434,27 +431,39 @@ Rules:
 - bg_color: teal | purple | amber | coral | blue
 - duration_seconds: 8-12`
 
-  try {
-    const text = await callGroq(EXPLAINER_PROMPT, 4096, 0.25, { jsonMode: true })
-    const result = parseGroqJson<any>(text)
-    if (!result?.scenes?.length) throw new Error('Invalid explainer JSON')
-    result.total_scenes = result.scenes.length
-    result.summary = result.summary ?? result.hook ?? 'Key takeaways from this lesson'
-    return result
-  } catch (err) {
-    if (isGroqRateLimitError(err)) {
-      console.warn('[generateExplainer] Rate limited — using offline template')
-      return buildFallbackExplainer(topic, subject)
+  if (GROQ_API_KEY) {
+    try {
+      const text = await callGroq(EXPLAINER_PROMPT, 4096, 0.25, { jsonMode: true })
+      const result = parseGroqJson<any>(text)
+      if (result?.scenes?.length) {
+        result.total_scenes = result.scenes.length
+        result.summary = result.summary ?? result.hook ?? 'Key takeaways from this lesson'
+        return result
+      }
+    } catch (err) {
+      console.warn('[gemini.ts] Groq explainer generate failed, trying Gemini:', err)
     }
-    throw err
   }
+
+  if (GEMINI_API_KEY) {
+    try {
+      const text = await callGeminiText(EXPLAINER_PROMPT, 0.25)
+      const result = parseJsonFromLLM<any>(text)
+      if (result?.scenes?.length) {
+        result.total_scenes = result.scenes.length
+        result.summary = result.summary ?? result.hook ?? 'Key takeaways from this lesson'
+        return result
+      }
+    } catch (geminiErr) {
+      console.error('[gemini.ts] Gemini explainer generate failed too:', geminiErr)
+    }
+  }
+
+  console.warn('[generateExplainer] Fallback to offline template')
+  return buildFallbackExplainer(topic, subject)
 }
 
 export async function generateFlashcards(topic: string, subject: string, solution: any, difficulty: string = 'medium', count: number = 6) {
-  if (!GROQ_API_KEY) {
-    throw new Error('EXPO_PUBLIC_GROQ_API_KEY is not set')
-  }
-
   const FLASHCARD_PROMPT = `Generate exactly ${count} flashcards about "${topic}" in ${subject}.
 Difficulty: ${difficulty}
 Context: ${JSON.stringify(solution).substring(0, 500)}
@@ -475,8 +484,22 @@ Return ONLY valid JSON. No markdown, no backticks.
 Make fronts engaging questions, not just "What is X?". Make backs clear and memorable.
 type: recall (definition), application (how to use), analysis (why/compare)`
 
-  const text = await callGroq(FLASHCARD_PROMPT, 2048, 0.15, { jsonMode: true })
-  return parseGroqJson(text)
+  if (GROQ_API_KEY) {
+    try {
+      const text = await callGroq(FLASHCARD_PROMPT, 2048, 0.15, { jsonMode: true })
+      return parseGroqJson(text)
+    } catch (err) {
+      console.warn('[gemini.ts] Groq flashcard generate failed, trying Gemini:', err)
+    }
+  }
+
+  if (GEMINI_API_KEY) {
+    const text = await callGeminiText(FLASHCARD_PROMPT, 0.15)
+    const data = parseJsonFromLLM(text)
+    if (data) return data
+  }
+
+  throw new Error('No AI service available for flashcard generation')
 }
 
 export async function generateQuizQuestions(
@@ -485,10 +508,6 @@ export async function generateQuizQuestions(
   count: number,
   topic?: string
 ) {
-  if (!GROQ_API_KEY) {
-    throw new Error('EXPO_PUBLIC_GROQ_API_KEY is not set')
-  }
-
   const topicLine = topic?.trim()
     ? `Focus specifically on this topic: "${topic.trim()}". Every question must test knowledge of this topic.`
     : ''
@@ -525,11 +544,26 @@ Rules:
 - Make questions genuinely interesting and educational
 - Return exactly ${count} questions`
 
-  const text = await callGroq(QUIZ_PROMPT, 4096, 0.15, { jsonMode: true })
-  const data = parseGroqJson<{ questions: unknown[] }>(text)
-  if (!data?.questions?.length) {
-    throw new Error('No quiz questions were generated')
+  if (GROQ_API_KEY) {
+    try {
+      const text = await callGroq(QUIZ_PROMPT, 4096, 0.15, { jsonMode: true })
+      const data = parseGroqJson<{ questions: unknown[] }>(text)
+      if (data?.questions?.length) {
+        return data
+      }
+    } catch (err) {
+      console.warn('[gemini.ts] Groq quiz generate failed, trying Gemini:', err)
+    }
   }
-  return data
+
+  if (GEMINI_API_KEY) {
+    const text = await callGeminiText(QUIZ_PROMPT, 0.15)
+    const data = parseJsonFromLLM<{ questions: unknown[] }>(text)
+    if (data?.questions?.length) {
+      return data
+    }
+  }
+
+  throw new Error('No AI service available for quiz generation')
 }
 
