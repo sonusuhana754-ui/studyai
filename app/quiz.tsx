@@ -1,8 +1,9 @@
 
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, Pressable, ScrollView, TextInput, Alert } from 'react-native'
+import { View, Text, StyleSheet, Pressable, ScrollView, TextInput } from 'react-native'
 import { router, useLocalSearchParams } from 'expo-router'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useToast } from '@/contexts/ToastContext'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Ionicons } from '@expo/vector-icons'
 import { Text as UIText } from '@/components/ui/Text'
@@ -19,6 +20,7 @@ type SourceType = 'topic' | 'scan' | 'video_explainer' | 'document'
 
 export default function QuizScreen() {
   const insets = useSafeAreaInsets()
+  const { showToast } = useToast()
   const params = useLocalSearchParams<{ topic?: string; subject?: string; examMode?: string }>()
   const isExamMode = params.examMode === '1'
   const [source, setSource] = useState<SourceType>('topic')
@@ -88,7 +90,7 @@ export default function QuizScreen() {
       setCorrectCount(0)
     } catch (e) {
       console.error('Failed to generate quiz:', e)
-      Alert.alert('Quiz failed', 'Could not generate questions. Check your connection and try again.')
+      showToast('Could not generate quiz. Check your connection or API keys.', 'error')
     } finally {
       setLoading(false)
     }
