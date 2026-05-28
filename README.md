@@ -9,7 +9,23 @@ A comprehensive AI-powered study application that helps students learn, study, a
 
 ## 📸 Screenshots
 
-![StudyAI Dashboard Mockup](./screenshots/dashboard.png)
+### 📚 Learning Dashboard & Study Centre
+
+| Study Centre | Dashboard |
+| :---: | :---: |
+| <img src="./screenshots/study centre.png" width="360" /> | <img src="./screenshots/dashboard.png" width="360" /> |
+
+### 📸 Camera Solver & Scanner
+
+| Camera Scanner | Solver Output |
+| :---: | :---: |
+| <img src="./screenshots/scanner .png" width="360" /> | <img src="./screenshots/scan output.png" width="360" /> |
+
+### 🎯 Flashcards & Video Explainer
+
+| Flashcards | Video Explainer |
+| :---: | :---: |
+| <img src="./screenshots/flashcards.png" width="360" /> | <img src="./screenshots/video explainer.png" width="360" /> |
 
 ## Features
 
